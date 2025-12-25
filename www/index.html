@@ -25,6 +25,7 @@
       --success: #10b981;
       --success-glow: rgba(16, 185, 129, 0.3);
       --danger: #ef4444;
+      --warning: #f59e0b;
       --bg-dark: #0a0f1a;
       --bg-card: rgba(255, 255, 255, 0.03);
       --border: rgba(255, 255, 255, 0.08);
@@ -38,16 +39,135 @@
       color: var(--text);
       min-height: 100vh;
       min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    /* Modo normal - mostrar controles */
+    .app-container {
       padding: 20px;
       padding-top: env(safe-area-inset-top, 20px);
       padding-bottom: env(safe-area-inset-bottom, 20px);
-    }
-
-    .container {
       max-width: 500px;
       margin: 0 auto;
+      transition: opacity 0.3s;
     }
 
+    /* Modo búsqueda - ocultar controles y mostrar WebView */
+    .app-container.searching {
+      display: none;
+    }
+
+    .search-mode {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      flex-direction: column;
+      background: var(--bg-dark);
+    }
+
+    .search-mode.active {
+      display: flex;
+    }
+
+    /* Barra de control superior */
+    .control-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.8);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border);
+      z-index: 100;
+    }
+
+    .control-bar .status {
+      font-size: 14px;
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .control-bar .progress-text {
+      font-weight: 600;
+      color: var(--primary);
+    }
+
+    .control-bar .btn-stop {
+      padding: 8px 16px;
+      border-radius: 8px;
+      border: none;
+      background: var(--danger);
+      color: white;
+      font-weight: 600;
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* Barra de progreso */
+    .progress-container {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      width: 100%;
+    }
+
+    .progress-bar-main {
+      height: 100%;
+      background: linear-gradient(90deg, var(--primary), var(--success));
+      width: 0%;
+      transition: width 0.3s ease;
+    }
+
+    /* WebView container */
+    .webview-container {
+      flex: 1;
+      position: relative;
+      background: white;
+    }
+
+    .webview-container iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* Overlay de búsqueda */
+    .search-overlay {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: rgba(0, 0, 0, 0.9);
+      color: white;
+      padding: 24px 32px;
+      border-radius: 16px;
+      text-align: center;
+      z-index: 50;
+      backdrop-filter: blur(10px);
+      min-width: 280px;
+    }
+
+    .search-overlay.hidden {
+      display: none;
+    }
+
+    .search-overlay .term {
+      font-size: 24px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      color: var(--primary);
+    }
+
+    .search-overlay .count {
+      font-size: 14px;
+      color: var(--text-muted);
+    }
+
+    /* Estilos originales */
     .header {
       text-align: center;
       margin-bottom: 24px;
@@ -93,7 +213,6 @@
       padding: 24px;
       margin-bottom: 16px;
       backdrop-filter: blur(10px);
-      -webkit-backdrop-filter: blur(10px);
     }
 
     .card-title {
@@ -178,12 +297,50 @@
       transform: scale(0.98);
     }
 
-    .btn:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-      transform: none;
+    /* Modo de búsqueda selector */
+    .mode-selector {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 16px;
     }
 
+    .mode-btn {
+      flex: 1;
+      padding: 12px;
+      border-radius: 10px;
+      border: 2px solid var(--border);
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .mode-btn.active {
+      border-color: var(--primary);
+      background: rgba(59, 130, 246, 0.1);
+      color: var(--primary);
+    }
+
+    /* Info box */
+    .info-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1px solid rgba(59, 130, 246, 0.3);
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 13px;
+      color: #93c5fd;
+    }
+
+    .info-box.warning {
+      background: rgba(245, 158, 11, 0.1);
+      border-color: rgba(245, 158, 11, 0.3);
+      color: #fcd34d;
+    }
+
+    /* Status card */
     .status-card {
       background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
       border: 1px solid rgba(59, 130, 246, 0.2);
@@ -260,13 +417,6 @@
       }
     }
 
-    .footer {
-      text-align: center;
-      padding: 20px;
-      font-size: 12px;
-      color: #555;
-    }
-
     .quick-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -291,7 +441,14 @@
       background: rgba(255, 255, 255, 0.1);
     }
 
-    /* Toast notification */
+    .footer {
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      color: #555;
+    }
+
+    /* Toast */
     .toast {
       position: fixed;
       bottom: 100px;
@@ -321,7 +478,11 @@
       background: rgba(239, 68, 68, 0.9);
     }
 
-    /* Bing logo animation */
+    .hidden {
+      display: none !important;
+    }
+
+    /* Bing animation */
     .bing-animation {
       display: flex;
       justify-content: center;
@@ -368,15 +529,12 @@
         transform: scale(1);
       }
     }
-
-    .hidden {
-      display: none !important;
-    }
   </style>
 </head>
 
 <body>
-  <div class="container">
+  <!-- MODO NORMAL - Controles -->
+  <div class="app-container" id="appContainer">
     <div class="header">
       <div class="logo">🥷</div>
       <h1>Bing Rewards Stealth</h1>
@@ -387,10 +545,28 @@
     <div class="card">
       <div class="card-title">⚙️ Configuración</div>
 
+      <!-- Selector de modo -->
+      <div class="form-group">
+        <label>Modo de búsqueda</label>
+        <div class="mode-selector">
+          <button class="mode-btn active" data-mode="sequential" onclick="setMode('sequential')">
+            📱 Secuencial
+          </button>
+          <button class="mode-btn" data-mode="tabs" onclick="setMode('tabs')">
+            🌐 Pestañas
+          </button>
+        </div>
+      </div>
+
+      <div class="info-box" id="modeInfo">
+        📱 <strong>Modo Secuencial:</strong> Abre una pestaña de Bing y navega automáticamente buscando cada término.
+        Más similar a la app de PC.
+      </div>
+
       <div class="form-group">
         <label>Tipo de búsqueda</label>
         <select id="searchType">
-          <option value="numbers">🔢 Números (1 al 100)</option>
+          <option value="numbers">🔢 Números (1 al N)</option>
           <option value="random">🎲 Palabras aleatorias</option>
           <option value="trending">📈 Tendencias</option>
           <option value="custom">✏️ Personalizado</option>
@@ -415,10 +591,10 @@
       <div class="form-group">
         <label>Velocidad</label>
         <select id="searchSpeed">
-          <option value="fast">⚡ Rápido (2-3s)</option>
-          <option value="normal" selected>🚀 Normal (4-6s)</option>
-          <option value="slow">🐢 Lento (8-10s)</option>
-          <option value="stealth">🥷 Stealth (15-20s)</option>
+          <option value="fast">⚡ Rápido (3-5s)</option>
+          <option value="normal" selected>🚀 Normal (6-10s)</option>
+          <option value="slow">🐢 Lento (12-15s)</option>
+          <option value="stealth">🥷 Stealth (20-30s)</option>
         </select>
       </div>
     </div>
@@ -438,7 +614,7 @@
       </div>
     </div>
 
-    <!-- Animación de búsqueda (oculta por defecto) -->
+    <!-- Animación -->
     <div class="bing-animation hidden" id="bingAnimation">
       <div class="bing-dot"></div>
       <div class="bing-dot"></div>
@@ -461,7 +637,29 @@
     </div>
 
     <div class="footer">
-      v1.0 Android • Bing Rewards Stealth
+      v2.0 Android • Bing Rewards Stealth • Modo PC-like
+    </div>
+  </div>
+
+  <!-- MODO BÚSQUEDA - Pantalla completa -->
+  <div class="search-mode" id="searchMode">
+    <div class="control-bar">
+      <div class="status">
+        <span id="searchModeIcon">🔍</span>
+        <span id="searchModeText">Buscando...</span>
+        <span class="progress-text" id="progressText">0/0</span>
+      </div>
+      <button class="btn-stop" onclick="stopSearch()">⏹️ Detener</button>
+    </div>
+    <div class="progress-container">
+      <div class="progress-bar-main" id="progressBarMain"></div>
+    </div>
+
+    <!-- Mensaje informativo -->
+    <div
+      style="background: rgba(59, 130, 246, 0.1); padding: 12px; text-align: center; font-size: 13px; color: #93c5fd;">
+      💡 <strong>Importante:</strong> Inicia sesión en tu cuenta de Microsoft en la pestaña que se abrió para que las
+      búsquedas cuenten.
     </div>
   </div>
 
@@ -474,8 +672,13 @@
     let currentSearch = 0;
     let totalSearches = 0;
     let searchTerms = [];
+    let searchMode = 'sequential'; // 'sequential' o 'tabs'
+    let searchWindow = null;
+    let searchTimeout = null;
 
-    // Elementos del DOM
+    // Elementos DOM
+    const appContainer = document.getElementById('appContainer');
+    const searchModeEl = document.getElementById('searchMode');
     const startBtn = document.getElementById('startBtn');
     const statusIcon = document.getElementById('statusIcon');
     const statusText = document.getElementById('statusText');
@@ -484,6 +687,23 @@
     const bingAnimation = document.getElementById('bingAnimation');
     const searchTypeSelect = document.getElementById('searchType');
     const customTermGroup = document.getElementById('customTermGroup');
+    const modeInfo = document.getElementById('modeInfo');
+
+    // Selector de modo
+    function setMode(mode) {
+      searchMode = mode;
+      document.querySelectorAll('.mode-btn').forEach(btn => {
+        btn.classList.toggle('active', btn.dataset.mode === mode);
+      });
+
+      if (mode === 'sequential') {
+        modeInfo.innerHTML = '📱 <strong>Modo Secuencial:</strong> Abre una pestaña de Bing y navega manualmente. Más similar a la app de PC y más efectivo.';
+        modeInfo.className = 'info-box';
+      } else {
+        modeInfo.innerHTML = '🌐 <strong>Modo Pestañas:</strong> Abre múltiples pestañas del navegador. Puede ser bloqueado por algunos navegadores.';
+        modeInfo.className = 'info-box warning';
+      }
+    }
 
     // Mostrar/ocultar campo personalizado
     searchTypeSelect.addEventListener('change', function () {
@@ -493,58 +713,52 @@
     // Generar términos de búsqueda
     function generateSearchTerms(type, count, customTerm = '') {
       const terms = [];
-
       switch (type) {
         case 'numbers':
           for (let i = 1; i <= count; i++) {
             terms.push(i.toString());
           }
           break;
-
         case 'random':
           const words = [
-            'tecnología', 'recetas', 'viajes', 'música', 'películas', 'deportes',
-            'noticias', 'ciencia', 'historia', 'arte', 'moda', 'naturaleza',
-            'salud', 'fitness', 'gaming', 'libros', 'fotografía', 'cocina',
-            'astronomía', 'animales', 'cultura', 'economía', 'política', 'clima'
+            'tecnología 2025', 'recetas fáciles', 'viajes baratos', 'música popular',
+            'películas nuevas', 'deportes hoy', 'noticias mundo', 'ciencia actual',
+            'historia antigua', 'arte moderno', 'moda tendencias', 'naturaleza fotos',
+            'salud tips', 'fitness ejercicios', 'gaming noticias', 'libros recomendados'
           ];
           for (let i = 0; i < count; i++) {
             const word = words[Math.floor(Math.random() * words.length)];
-            const year = 2020 + Math.floor(Math.random() * 6);
-            terms.push(`${word} ${year}`);
+            terms.push(`${word} ${Math.floor(Math.random() * 1000)}`);
           }
           break;
-
         case 'trending':
           const trending = [
-            'mejores apps 2024', 'películas estreno', 'recetas navidad',
-            'tecnología 2025', 'juegos populares', 'series recomendadas',
-            'noticias hoy', 'clima semana', 'resultados deportes',
-            'ofertas tecnología', 'viajes económicos', 'música nueva'
+            'mejores apps android', 'películas estreno 2025', 'recetas navidad',
+            'tecnología CES 2025', 'juegos populares', 'series netflix',
+            'noticias última hora', 'clima esta semana', 'resultados fútbol',
+            'ofertas amazon', 'viajes económicos', 'música spotify'
           ];
           for (let i = 0; i < count; i++) {
-            terms.push(trending[i % trending.length] + ' ' + Math.floor(Math.random() * 100));
+            terms.push(`${trending[i % trending.length]} ${Math.floor(Math.random() * 100)}`);
           }
           break;
-
         case 'custom':
           for (let i = 1; i <= count; i++) {
-            terms.push(`${customTerm} ${i}`);
+            terms.push(`${customTerm || 'busqueda'} ${i}`);
           }
           break;
       }
-
       return terms;
     }
 
     // Obtener delay según velocidad
     function getDelay(speed) {
       switch (speed) {
-        case 'fast': return 2000 + Math.random() * 1000;
-        case 'normal': return 4000 + Math.random() * 2000;
-        case 'slow': return 8000 + Math.random() * 2000;
-        case 'stealth': return 15000 + Math.random() * 5000;
-        default: return 4000;
+        case 'fast': return 3000 + Math.random() * 2000;
+        case 'normal': return 6000 + Math.random() * 4000;
+        case 'slow': return 12000 + Math.random() * 3000;
+        case 'stealth': return 20000 + Math.random() * 10000;
+        default: return 6000;
       }
     }
 
@@ -575,53 +789,116 @@
 
       showToast('🚀 Iniciando búsquedas...', 'success');
 
-      // Ejecutar búsquedas
+      if (searchMode === 'sequential') {
+        await runSequentialSearch(speed);
+      } else {
+        await runTabsSearch(speed);
+      }
+    }
+
+    // Búsqueda secuencial (modo PC-like)
+    async function runSequentialSearch(speed) {
+      // Abrir primera pestaña con Bing
+      const firstUrl = `https://www.bing.com/search?q=${encodeURIComponent(searchTerms[0])}`;
+      searchWindow = window.open(firstUrl, '_blank');
+
+      showToast('🔓 Inicia sesión en Microsoft si no lo has hecho', 'success');
+
+      // Dar tiempo para que el usuario inicie sesión
+      await sleep(5000);
+
       for (let i = 0; i < searchTerms.length && isRunning; i++) {
         currentSearch = i + 1;
         const term = searchTerms[i];
 
         // Actualizar estado
-        statusIcon.textContent = '🔍';
-        statusText.textContent = `Buscando: "${term}" (${currentSearch}/${totalSearches})`;
-        progressFill.style.width = `${(currentSearch / totalSearches) * 100}%`;
+        updateSearchStatus(term, i);
 
-        // Añadir a la lista
-        const item = document.createElement('div');
-        item.className = 'search-item current';
-        item.innerHTML = `<span>🔄</span> ${term}`;
-        item.id = `search-${i}`;
-        searchList.prepend(item);
-        searchList.scrollTop = 0;
+        // Navegar a la búsqueda
+        const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(term)}&form=QBLH`;
 
-        // Abrir búsqueda en Bing
+        if (searchWindow && !searchWindow.closed) {
+          try {
+            searchWindow.location.href = searchUrl;
+          } catch (e) {
+            // Si no podemos cambiar la URL (CORS), abrir nueva pestaña
+            searchWindow = window.open(searchUrl, '_blank');
+          }
+        } else {
+          searchWindow = window.open(searchUrl, '_blank');
+        }
+
+        // Esperar
+        const delay = getDelay(speed);
+        await sleep(delay);
+
+        // Marcar como completado
+        markSearchComplete(i, term);
+      }
+
+      finishSearch();
+    }
+
+    // Búsqueda con pestañas múltiples
+    async function runTabsSearch(speed) {
+      for (let i = 0; i < searchTerms.length && isRunning; i++) {
+        currentSearch = i + 1;
+        const term = searchTerms[i];
+
+        updateSearchStatus(term, i);
+
+        // Abrir búsqueda en nueva pestaña
         const searchUrl = `https://www.bing.com/search?q=${encodeURIComponent(term)}`;
         window.open(searchUrl, '_blank');
 
         // Esperar
         const delay = getDelay(speed);
-        await new Promise(resolve => setTimeout(resolve, delay));
+        await sleep(delay);
 
-        // Marcar como completado
-        if (document.getElementById(`search-${i}`)) {
-          document.getElementById(`search-${i}`).className = 'search-item done';
-          document.getElementById(`search-${i}`).innerHTML = `<span>✅</span> ${term}`;
-        }
+        markSearchComplete(i, term);
       }
 
-      // Finalizar
+      finishSearch();
+    }
+
+    function updateSearchStatus(term, index) {
+      statusIcon.textContent = '🔍';
+      statusText.textContent = `Buscando: "${term}" (${currentSearch}/${totalSearches})`;
+      progressFill.style.width = `${(currentSearch / totalSearches) * 100}%`;
+
+      // Añadir a la lista
+      const item = document.createElement('div');
+      item.className = 'search-item current';
+      item.innerHTML = `<span>🔄</span> ${term}`;
+      item.id = `search-${index}`;
+      searchList.prepend(item);
+      searchList.scrollTop = 0;
+    }
+
+    function markSearchComplete(index, term) {
+      const item = document.getElementById(`search-${index}`);
+      if (item) {
+        item.className = 'search-item done';
+        item.innerHTML = `<span>✅</span> ${term}`;
+      }
+    }
+
+    function finishSearch() {
       if (isRunning) {
         statusIcon.textContent = '✅';
         statusText.textContent = `¡Completado! ${totalSearches} búsquedas realizadas`;
         progressFill.style.width = '100%';
         showToast(`🎉 ¡${totalSearches} búsquedas completadas!`, 'success');
       }
-
       resetButton();
     }
 
     // Detener búsqueda
     function stopSearch() {
       isRunning = false;
+      if (searchTimeout) {
+        clearTimeout(searchTimeout);
+      }
       statusIcon.textContent = '⏹️';
       statusText.textContent = `Detenido en ${currentSearch}/${totalSearches}`;
       showToast('⏹️ Búsqueda detenida', 'error');
@@ -657,7 +934,13 @@
       showToast('🎁 Abriendo Bing Rewards...', 'success');
     }
 
-    // Mostrar toast
+    // Utilidades
+    function sleep(ms) {
+      return new Promise(resolve => {
+        searchTimeout = setTimeout(resolve, ms);
+      });
+    }
+
     function showToast(message, type = '') {
       const toast = document.getElementById('toast');
       toast.textContent = message;
@@ -669,11 +952,11 @@
 
     // Inicialización
     document.addEventListener('DOMContentLoaded', function () {
-      showToast('🥷 App lista', 'success');
+      showToast('🥷 App lista - Modo PC-like', 'success');
 
-      // Registrar Service Worker para PWA
+      // Registrar Service Worker
       if ('serviceWorker' in navigator) {
-        navigator.serviceWorker.register('/sw.js')
+        navigator.serviceWorker.register('sw.js')
           .then(reg => console.log('SW registrado:', reg.scope))
           .catch(err => console.log('SW error:', err));
       }
