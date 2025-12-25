@@ -1,0 +1,28 @@
+# Node modules
+node_modules/
+
+# Build outputs
+android/app/build/
+android/.gradle/
+android/build/
+*.apk
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local env
+.env
+.env.local
+
+# Zip files (no necesarios para el repo)
+*.zip

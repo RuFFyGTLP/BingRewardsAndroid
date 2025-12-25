@@ -1,0 +1,26 @@
+{
+  "name": "bing-rewards-android",
+  "version": "1.0.0",
+  "description": "Bing Rewards Stealth para Android",
+  "main": "index.js",
+  "scripts": {
+    "build": "echo 'Build completed'",
+    "cap:add": "npx cap add android",
+    "cap:sync": "npx cap sync android",
+    "cap:open": "npx cap open android",
+    "android": "npx cap sync android && npx cap open android"
+  },
+  "keywords": [
+    "bing",
+    "rewards",
+    "android",
+    "automation"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@capacitor/android": "^7.2.0",
+    "@capacitor/cli": "^7.2.0",
+    "@capacitor/core": "^7.2.0"
+  }
+}

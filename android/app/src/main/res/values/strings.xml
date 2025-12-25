@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Bing Rewards Stealth</string>
+    <string name="title_activity_main">Bing Rewards Stealth</string>
+    <string name="package_name">com.bingrewards.stealth</string>
+    <string name="custom_url_scheme">com.bingrewards.stealth</string>
+</resources>
