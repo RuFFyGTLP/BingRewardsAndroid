@@ -19,8 +19,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "@capacitor/android": "^7.2.0",
-    "@capacitor/cli": "^7.2.0",
-    "@capacitor/core": "^7.2.0"
+    "@capacitor/android": "^8.0.0",
+    "@capacitor/cli": "^8.0.0",
+    "@capacitor/core": "^8.0.0"
   }
 }
